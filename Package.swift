@@ -2,6 +2,8 @@
 
 import PackageDescription
 
+let isDevelopment = true
+
 let package = Package(
     name: "FilePath.swift",
     platforms: [.macOS(.v15), .iOS(.v17), .tvOS(.v17), .watchOS(.v10)],
@@ -32,7 +34,7 @@ extension SwiftSetting {
 
 package.targets
     .filter { ![.system, .binary, .plugin].contains($0.type) }
-    .forEach { 
+    .forEach {
         $0.swiftSettings = [
             .existentialAny,
             .internalImportsByDefault,
@@ -43,3 +45,10 @@ package.targets
             .defaultIsolation($0.isTest ? nil : MainActor.self)
         ]
     }
+
+if isDevelopment {
+    package.dependencies.append(.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", exact: "0.65.1"))
+    package.targets.forEach {
+        $0.plugins = [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+    }
+}
