@@ -75,6 +75,28 @@ struct FilePathTests {
             #expect(path.path == expectedURL.path())
         }
     }
+
+    @Suite
+    struct Exists {
+        @Test
+        func file() async throws {
+            let fileURL = try #require(Bundle.module.url(forResource: "test", withExtension: "txt"))
+            let path = FilePath(url: fileURL)
+            #expect(await path.exists)
+            #expect(await path.isFile)
+            #expect(await !path.isDirectory)
+        }
+
+        @Test
+        func directory() async throws {
+            let fileURL = try #require(Bundle.module.url(forResource: "test", withExtension: "txt"))
+                .deletingLastPathComponent()
+            let path = FilePath(url: fileURL)
+            #expect(await path.exists)
+            #expect(await !path.isFile)
+            #expect(await path.isDirectory)
+        }
+    }
 }
 
 // MARK: -

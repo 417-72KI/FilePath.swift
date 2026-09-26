@@ -8,6 +8,12 @@ public extension FilePath {
         guard fm.fileExists(atPath: path, isDirectory: &isDir) else { return false }
         return !isDir.boolValue
     }
+
+    var isDirectory: Bool {
+        var isDir = ObjCBool(false)
+        guard fm.fileExists(atPath: path, isDirectory: &isDir) else { return false }
+        return isDir.boolValue
+    }
 }
 
 extension FilePath {
