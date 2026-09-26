@@ -33,6 +33,21 @@ struct FilePathTests {
     }
 
     @Suite
+    struct PlusOperator {
+        let basePath = FilePath("foo/bar")
+
+        @Test
+        func appendingPath() async throws {
+            #expect(basePath + "baz/qux" == FilePath("foo/bar/baz/qux"))
+        }
+
+        @Test
+        func appendingPathWithDotDot() async throws {
+            #expect(basePath + "../baz/qux" == FilePath("foo/baz/qux"))
+        }
+    }
+
+    @Suite
     struct ExpressibleByStringLiteral {
         @Test
         func relativePath() async throws {

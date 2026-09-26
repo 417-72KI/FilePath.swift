@@ -31,6 +31,13 @@ public extension FilePath {
 
 // MARK: -
 public extension FilePath {
+    nonisolated static func + (lhs: FilePath, rhs: String) -> FilePath {
+        FilePath(url: lhs.url.appending(path: rhs))
+    }
+}
+
+// MARK: -
+public extension FilePath {
     static var current: Self {
         Self(fm.currentDirectoryPath)
     }
