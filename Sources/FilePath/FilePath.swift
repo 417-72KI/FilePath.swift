@@ -19,16 +19,6 @@ public extension FilePath {
     nonisolated var absolutePath: String { url.absoluteURL.path(percentEncoded: false) }
 }
 
-public extension FilePath {
-    var exists: Bool { fm.fileExists(atPath: path) }
-
-    var isFile: Bool {
-        var isDir = ObjCBool(false)
-        guard fm.fileExists(atPath: path, isDirectory: &isDir) else { return false }
-        return !isDir.boolValue
-    }
-}
-
 // MARK: -
 public extension FilePath {
     nonisolated static func + (lhs: FilePath, rhs: String) -> FilePath {
