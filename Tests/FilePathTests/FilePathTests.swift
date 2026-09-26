@@ -2,6 +2,8 @@ import Foundation
 import Testing
 @testable import FilePath
 
+private var currentDirectory: URL { .currentDirectory() }
+
 @Suite(.dumpCurrentDirectory)
 struct FilePathTests {
     @Test(arguments: [
@@ -29,10 +31,23 @@ struct FilePathTests {
         #expect(path.path == expectedURL.path())
         #expect(path.absolutePath == expectedURL.absoluteURL.path())
     }
-}
 
-private extension FilePathTests {
-    var currentDirectory: URL { .currentDirectory() }
+    @Suite
+    struct ExpressibleByStringLiteral {
+        @Test
+        func relativePath() async throws {
+            let expectedURL = URL(filePath: "foo/bar", relativeTo: currentDirectory)
+            let path: FilePath = "foo/bar"
+            #expect(path.path == expectedURL.path())
+        }
+
+        @Test
+        func absolutePath() async throws {
+            let expectedURL = URL(filePath: "/foo/bar")
+            let path: FilePath = "/foo/bar"
+            #expect(path.path == expectedURL.path())
+        }
+    }
 }
 
 // MARK: -
