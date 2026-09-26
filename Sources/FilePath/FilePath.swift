@@ -29,27 +29,9 @@ public extension FilePath {
     }
 }
 
+// MARK: -
 public extension FilePath {
     static var current: Self {
         Self(fm.currentDirectoryPath)
     }
-}
-
-// MARK: -
-extension FilePath: Identifiable {
-    public var id: String { url.absoluteString }
-}
-
-// MARK: -
-extension FilePath: CustomStringConvertible {
-    public nonisolated var description: String { absolutePath }
-}
-
-// MARK: -
-private extension FilePath {
-    static let fm = FileManager.default
-}
-
-private extension FilePath {
-    var fm: FileManager { Self.fm }
 }
