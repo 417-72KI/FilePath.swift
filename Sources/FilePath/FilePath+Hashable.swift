@@ -1,11 +1,13 @@
 import Foundation
 
-extension FilePath: Hashable {
-    public nonisolated static func == (lhs: borrowing FilePath, rhs: borrowing FilePath) -> Bool {
+extension FilePath: Equatable {
+    nonisolated public static func == (lhs: borrowing FilePath, rhs: borrowing FilePath) -> Bool {
         lhs.url.absoluteURL == rhs.url.absoluteURL
     }
+}
 
-    public nonisolated func hash(into hasher: inout Hasher) {
+extension FilePath: Hashable {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(url.absoluteURL)
     }
 }

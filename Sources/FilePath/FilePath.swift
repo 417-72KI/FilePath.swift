@@ -4,8 +4,8 @@ public struct FilePath {
     let url: URL
 }
 
-extension FilePath {
-    public init(_ path: String) {
+public extension FilePath {
+    init(_ path: String) {
         self.url = URL(
             filePath: path,
             relativeTo: .currentDirectory()

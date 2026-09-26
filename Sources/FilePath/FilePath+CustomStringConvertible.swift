@@ -1,3 +1,3 @@
 extension FilePath: CustomStringConvertible {
-    public nonisolated var description: String { absolutePath }
+    nonisolated public var description: String { absolutePath }
 }
