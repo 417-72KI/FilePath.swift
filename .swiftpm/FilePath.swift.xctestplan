@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "5701CFBB-7972-4621-A5D6-632CB99CA95B",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "testInteropMode" : "complete"
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "FilePathTests",
+        "name" : "FilePathTests"
+      }
+    }
+  ],
+  "version" : 2
+}
