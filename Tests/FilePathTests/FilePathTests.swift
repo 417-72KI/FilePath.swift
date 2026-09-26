@@ -41,7 +41,11 @@ struct FilePathTests {
     @Test
     func home() async throws {
         let fm = FileManager.default
+        #if os(iOS) || os(tvOS) || os(watchOS)
+        #expect(FilePath.home == FilePath("~/"))
+        #else
         #expect(await FilePath.home == FilePath(fm.homeDirectoryForCurrentUser.path()))
+        #endif
     }
 
     @Suite
