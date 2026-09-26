@@ -8,6 +8,7 @@ public extension FilePath {
     init(_ path: String) {
         self.url = URL(
             filePath: path,
+            directoryHint: .checkFileSystem,
             relativeTo: .currentDirectory()
         )
     }
@@ -28,7 +29,11 @@ public extension FilePath {
 
 // MARK: -
 public extension FilePath {
-    static var current: Self {
-        Self(fm.currentDirectoryPath)
+    nonisolated static var current: Self {
+        Self(url: .currentDirectory())
+    }
+
+    nonisolated static var home: Self {
+        Self(url: .homeDirectory)
     }
 }

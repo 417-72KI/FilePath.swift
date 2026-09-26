@@ -32,6 +32,18 @@ struct FilePathTests {
         #expect(path.absolutePath == expectedURL.absoluteURL.path())
     }
 
+    @Test
+    func current() async throws {
+        let fm = FileManager.default
+        #expect(await FilePath.current == FilePath(fm.currentDirectoryPath))
+    }
+
+    @Test
+    func home() async throws {
+        let fm = FileManager.default
+        #expect(await FilePath.home == FilePath(fm.homeDirectoryForCurrentUser.path()))
+    }
+
     @Suite
     struct PlusOperator {
         let basePath = FilePath("foo/bar")
@@ -77,7 +89,7 @@ struct DumpCurrentDirectoryTrait: TestTrait, TestScoping, SuiteTrait {
     private func setUp() async throws {
         print(
             "\u{001B}[36;1m",
-            "Current directory: \(await FilePath.current.absolutePath)",
+            "Current directory: \(FilePath.current.absolutePath)",
             "\u{001B}[0m",
             separator: "",
         )
