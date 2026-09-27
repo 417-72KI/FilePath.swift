@@ -1,0 +1,28 @@
+macos_runners:
+  xcode-27:
+    xcode:
+      "27.0":
+        destination:
+          - platform=macOS
+          - platform=iOS Simulator,name=iPhone 18 Pro
+          - platform=tvOS Simulator,name=Apple TV 4K (3rd generation)
+          - platform=watchOS Simulator,name=Apple Watch Series 12 (46mm)
+  macos-26:
+    xcode:
+      "26.6":
+        destination:
+          - platform=macOS
+          - platform=iOS Simulator,name=iPhone 17 Pro
+          - platform=tvOS Simulator,name=Apple TV 4K (3rd generation)
+          - platform=watchOS Simulator,name=Apple Watch Series 11 (46mm)
+      "26.3":
+        destination:
+          - platform=macOS
+          - platform=iOS Simulator,name=iPhone 17 Pro
+          - platform=tvOS Simulator,name=Apple TV 4K (3rd generation)
+          - platform=watchOS Simulator,name=Apple Watch Series 11 (46mm)
+linux_runner:
+  swift_versions:
+    - "6.4"
+    - "6.3"
+    - "6.2"
