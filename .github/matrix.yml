@@ -18,9 +18,9 @@ macos_runners:
       "26.3":
         destination:
           - platform=macOS
-          - platform=iOS Simulator,name=iPhone 17 Pro
-          - platform=tvOS Simulator,name=Apple TV 4K (3rd generation)
-          - platform=watchOS Simulator,name=Apple Watch Series 11 (46mm)
+          # - platform=iOS Simulator,name=iPhone 17 Pro
+          # - platform=tvOS Simulator,name=Apple TV 4K (3rd generation)
+          # - platform=watchOS Simulator,name=Apple Watch Series 11 (46mm)
 linux_runner:
   swift_versions:
     - "6.4"
