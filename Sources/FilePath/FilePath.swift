@@ -41,8 +41,16 @@ public extension FilePath {
 // MARK: -
 public extension FilePath {
     @discardableResult
-    func move(to destination: FilePath) throws -> FilePath {
-        try fm.moveItem(at: url, to: destination.url)
-        return destination
+    func move(to destination: FilePath) throws(FilePathError) -> FilePath {
+        do {
+            try fm.moveItem(at: url, to: destination.url)
+            return destination
+        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
+            throw FilePathError.notExists(self)
+        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileWriteFileExistsError {
+            throw FilePathError.conflict(self, destination)
+        } catch {
+            throw FilePathError.unexpected(origin: error)
+        }
     }
 }
