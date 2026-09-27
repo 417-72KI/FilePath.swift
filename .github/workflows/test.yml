@@ -60,7 +60,7 @@ jobs:
           set -o pipefail && \
           xcrun xcodebuild \
             -enableCodeCoverage YES \
-            -scheme "$(xcodebuild -list -json | jq -rc '.workspace.name')" \
+            -scheme "$(xcodebuild -list -json | jq -rc '.workspace.schemes[0] // .workspace.name')" \
             -destination "${{ matrix.destination }}" \
             -derivedDataPath '.build' \
             -resultBundlePath 'test_output/TestResult.xcresult' \
