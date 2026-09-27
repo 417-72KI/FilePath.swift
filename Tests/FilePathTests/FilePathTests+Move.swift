@@ -39,11 +39,10 @@ extension FilePathTests {
             let destinationPath = FilePath(url: UsingTemporaryDirectory.current.appending(path: "not_existing_moved"))
             try #require(await !path.exists)
             try #require(await !destinationPath.exists)
-            let error = try await #require(throws: NSError.self) {
+            let error = try await #require(throws: FilePathError.self) {
                 try await path.move(to: destinationPath)
             }
-            #expect(error.domain == NSCocoaErrorDomain)
-            #expect(error.code == 4)
+            #expect(error == .notExists(path))
         }
 
         @Test(arguments: [
@@ -57,11 +56,10 @@ extension FilePathTests {
             let destinationPath = FilePath(url: UsingTemporaryDirectory.current.appending(path: destination))
             try #require(await path.exists)
             try #require(await destinationPath.exists)
-            let error = try await #require(throws: NSError.self) {
+            let error = try await #require(throws: FilePathError.self) {
                 try await path.move(to: destinationPath)
             }
-            #expect(error.domain == NSCocoaErrorDomain)
-            #expect(error.code == 516)
+            #expect(error == .conflict(path, destinationPath))
         }
     }
 }
