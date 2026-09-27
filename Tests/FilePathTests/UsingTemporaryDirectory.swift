@@ -19,20 +19,18 @@ struct UsingTemporaryDirectory: TestTrait, TestScoping {
             at: tmpDirectory,
             withIntermediateDirectories: true,
         )
-        var isDir = ObjCBool(false)
-        try #require(fm.fileExists(atPath: tmpDirectory.path(), isDirectory: &isDir) && isDir.boolValue)
-        try await setUp(in: tmpDirectory, withFileManager: fm)
         do {
+            var isDir = ObjCBool(false)
+            try #require(fm.fileExists(atPath: tmpDirectory.path(), isDirectory: &isDir) && isDir.boolValue)
+            try await setUp(in: tmpDirectory, withFileManager: fm)
             try await Self.$current.withValue(tmpDirectory) {
                 try await function()
             }
         } catch {
-            try fm.removeItem(at: tmpDirectory)
-            try #require(!fm.fileExists(atPath: tmpDirectory.path()))
+            try cleanUp(tmpDirectory, withFileManager: fm)
             throw error
         }
-        try fm.removeItem(at: tmpDirectory)
-        try #require(!fm.fileExists(atPath: tmpDirectory.path()))
+        try cleanUp(tmpDirectory, withFileManager: fm)
     }
 }
 
@@ -73,6 +71,14 @@ private extension UsingTemporaryDirectory {
             includingPropertiesForKeys: [.isRegularFileKey]
         )
         try #require(fileURLs.count == filesToCreate)
+    }
+
+    func cleanUp(
+        _ directory: URL,
+        withFileManager fm: FileManager
+    ) throws {
+        try fm.removeItem(at: directory)
+        try #require(!fm.fileExists(atPath: directory.path()))
     }
 }
 
