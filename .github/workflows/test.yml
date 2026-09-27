@@ -19,7 +19,7 @@ jobs:
       macos-versions: ${{ steps.extract-matrix.outputs.macos-versions }}
       linux-swift-versions: ${{ steps.extract-matrix.outputs.linux-swift-versions }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - id: extract-matrix
         run: |
           echo "macos-versions=$(.github/create-matrix.sh macOS)" >> $GITHUB_OUTPUT
@@ -35,11 +35,11 @@ jobs:
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - id: create-destination-key
         name: Create destination key for cache
         run: echo "destination-key=$(echo "xcode_${{ matrix.xcode }}-${{ matrix.destination }}" | sed 's/[, ]/_/g')" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v6
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: |
             .build/SourcePackages
@@ -63,7 +63,7 @@ jobs:
             -resultBundlePath 'test_output/TestResult.xcresult' \
             clean test | xcpretty
       - name: Upload test result
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: success() || failure()
         with:
           name: ${{ steps.create-destination-key.outputs.destination-key }}
@@ -80,8 +80,8 @@ jobs:
         swift: ${{ fromJson(needs.extract-matrix.outputs.linux-swift-versions) }}
       fail-fast: false
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/cache@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: |
             .build/artifacts
