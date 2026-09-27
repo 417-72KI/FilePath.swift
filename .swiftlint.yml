@@ -35,6 +35,8 @@ line_length:
   ignores_function_declarations: true
   ignores_comments: true
   ignores_interpolated_strings: true
+  ignores_multiline_strings: true
+  ignores_regex_literals: true
 file_length:
   ignore_comment_only_lines: true
 cyclomatic_complexity:
