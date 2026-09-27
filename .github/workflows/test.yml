@@ -32,9 +32,6 @@ jobs:
         include: ${{ fromJson(needs.extract-matrix.outputs.macos-versions) }}
       fail-fast: false
     runs-on: ${{ matrix.runner }}
-    concurrency:
-      group: ${{ github.head_ref }}-${{ github.workflow }}-${{ matrix.xcode }}-${{ matrix.destination }}
-      cancel-in-progress: true
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
     steps:
@@ -78,9 +75,6 @@ jobs:
     needs: extract-matrix
     runs-on: ubuntu-latest
     container: swift:${{ matrix.swift }}
-    concurrency:
-      group: ${{ github.head_ref }}-${{ github.workflow }}-${{ matrix.swift }}
-      cancel-in-progress: true
     strategy:
       matrix:
         swift: ${{ fromJson(needs.extract-matrix.outputs.linux-swift-versions) }}
