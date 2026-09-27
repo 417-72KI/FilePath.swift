@@ -59,4 +59,12 @@ public extension FilePath {
             throw FilePathError.unexpected(origin: error)
         }
     }
+
+    func move(toDirectory directory: FilePath) throws(FilePathError) -> FilePath {
+        guard directory.isDirectory else {
+            throw FilePathError.notDirectory(directory)
+        }
+        let destination = directory + url.lastPathComponent
+        return try move(to: destination)
+    }
 }
