@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@v7
       - id: create-destination-key
         name: Create destination key for cache
-        run: echo "destination-key=$(echo "xcode_${{ matrix.xcode }}-${{ matrix.destination }}" | sed -r 's/[, ]/_/g')" >> $GITHUB_OUTPUT
+        run: echo "destination-key=$(echo "xcode_${{ matrix.xcode }}-${{ matrix.destination }}" | sed 's/[, ]/_/g')" >> $GITHUB_OUTPUT
       - uses: actions/cache@v6
         with:
           path: |
