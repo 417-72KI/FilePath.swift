@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/test.yml
-      - .github/create-matrix-macos.sh
+      - .github/create-matrix.sh
       - Package.*
       - Sources/**/*.swift
       - Tests/**/*.swift
@@ -22,8 +22,8 @@ jobs:
       - uses: actions/checkout@v7
       - id: extract-matrix
         run: |
-          echo "macos-versions=$(.github/create-matrix-macos.sh)" >> $GITHUB_OUTPUT
-          echo "linux-swift-versions=$(yq -o=json -I=0 '.linux_runner.swift_versions' .github/matrix.yml)" >> $GITHUB_OUTPUT
+          echo "macos-versions=$(.github/create-matrix.sh macOS)" >> $GITHUB_OUTPUT
+          echo "linux-swift-versions=$(.github/create-matrix.sh Linux)" >> $GITHUB_OUTPUT
   test-macos:
     name: Test(macOS)
     needs: extract-matrix
