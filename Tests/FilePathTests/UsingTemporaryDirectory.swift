@@ -50,27 +50,34 @@ private extension UsingTemporaryDirectory {
                 atomically: true,
                 encoding: .utf8
             )
-
-        let testDirectoryURL = directory.appending(
-            components: "dir1",
-            "dir2",
-            "dir3",
-            directoryHint: .isDirectory
-        )
-        try fm.createDirectory(
-            at: testDirectoryURL,
-            withIntermediateDirectories: true
-        )
-        let filesToCreate = 5
-        try (1...filesToCreate).forEach {
-            let fileURL = testDirectoryURL.appending(path: "\($0).txt")
-            try "\($0)".write(to: fileURL, atomically: true, encoding: .utf8)
+        let directoriesToCreate = 3
+        try (1...directoriesToCreate).forEach {
+            let testDirectoryURL = directory.appending(
+                components: "dir\($0)",
+                "subdir_1",
+                "subdir_2",
+                directoryHint: .isDirectory
+            )
+            try fm.createDirectory(
+                at: testDirectoryURL,
+                withIntermediateDirectories: true
+            )
+            let filesToCreate = 5
+            try (1...filesToCreate).forEach {
+                let fileURL = testDirectoryURL.appending(path: "\($0).txt")
+                try "\($0)".write(to: fileURL, atomically: true, encoding: .utf8)
+            }
+            let fileURLs = try fm.contentsOfDirectory(
+                at: testDirectoryURL,
+                includingPropertiesForKeys: [.isRegularFileKey]
+            )
+            try #require(fileURLs.count == filesToCreate)
         }
-        let fileURLs = try fm.contentsOfDirectory(
-            at: testDirectoryURL,
-            includingPropertiesForKeys: [.isRegularFileKey]
+        let directoryURLs = try fm.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: [.isDirectoryKey]
         )
-        try #require(fileURLs.count == filesToCreate)
+        try #require(directoryURLs.filter(\.hasDirectoryPath).count == directoriesToCreate)
     }
 
     func cleanUp(

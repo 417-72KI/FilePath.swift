@@ -56,11 +56,15 @@ struct FilePathTests {
         @Test
         func appendingPath() async throws {
             #expect(basePath + "baz/qux" == FilePath("foo/bar/baz/qux"))
+            #expect(basePath + "baz" + "qux" == FilePath("foo/bar/baz/qux"))
         }
 
         @Test
         func appendingPathWithDotDot() async throws {
             #expect(basePath + "../baz/qux" == FilePath("foo/baz/qux"))
+            #expect(basePath + "../baz" + "qux" == FilePath("foo/baz/qux"))
+            #expect(basePath + ".." + "baz/qux" == FilePath("foo/baz/qux"))
+            #expect(basePath + ".." + "baz" + "qux" == FilePath("foo/baz/qux"))
         }
     }
 
@@ -97,7 +101,7 @@ struct FilePathTests {
 
         @Test
         func directory() async throws {
-            let fileURL = UsingTemporaryDirectory.current
+            let fileURL = UsingTemporaryDirectory.current.appending(path: "dir1")
             let path = FilePath(url: fileURL)
             #expect(await path.exists)
             #expect(await !path.isFile)
