@@ -17,8 +17,7 @@ let package = Package(
         .target(name: "FilePath"),
         .testTarget(
             name: "FilePathTests",
-            dependencies: ["FilePath"],
-            resources: [.process("Resources")],
+            dependencies: ["FilePath"]
         ),
     ],
     swiftLanguageModes: [.v6]

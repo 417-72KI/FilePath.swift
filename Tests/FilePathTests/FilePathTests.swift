@@ -2,9 +2,7 @@ import Foundation
 import Testing
 @testable import FilePath
 
-private var currentDirectory: URL { .currentDirectory() }
-
-@Suite(.dumpCurrentDirectory)
+@Suite(.usingTemporaryDirectory)
 struct FilePathTests {
     @Test(arguments: [
         "foo/bar",
@@ -12,7 +10,10 @@ struct FilePathTests {
         "../foo/bar/baz",
     ])
     func relativePath(_ path: String) async throws {
-        let expectedURL = URL(filePath: path, relativeTo: currentDirectory)
+        let expectedURL = URL(
+            filePath: path,
+            relativeTo: .currentDirectory()
+        )
         let path = await FilePath(path)
         #expect(await path.url == expectedURL)
         #expect(path.path == expectedURL.path())
@@ -67,7 +68,10 @@ struct FilePathTests {
     struct ExpressibleByStringLiteral {
         @Test
         func relativePath() async throws {
-            let expectedURL = URL(filePath: "foo/bar", relativeTo: currentDirectory)
+            let expectedURL = URL(
+                filePath: "foo/bar",
+                relativeTo: .currentDirectory()
+            )
             let path: FilePath = "foo/bar"
             #expect(path.path == expectedURL.path())
         }
@@ -84,7 +88,7 @@ struct FilePathTests {
     struct Exists {
         @Test
         func file() async throws {
-            let fileURL = try #require(Bundle.module.url(forResource: "test", withExtension: "txt"))
+            let fileURL = UsingTemporaryDirectory.current.appending(path: "test.txt")
             let path = FilePath(url: fileURL)
             #expect(await path.exists)
             #expect(await path.isFile)
@@ -93,40 +97,11 @@ struct FilePathTests {
 
         @Test
         func directory() async throws {
-            let fileURL = try #require(Bundle.module.url(forResource: "test", withExtension: "txt"))
-                .deletingLastPathComponent()
+            let fileURL = UsingTemporaryDirectory.current
             let path = FilePath(url: fileURL)
             #expect(await path.exists)
             #expect(await !path.isFile)
             #expect(await path.isDirectory)
         }
-    }
-}
-
-// MARK: -
-extension Trait where Self == DumpCurrentDirectoryTrait {
-    static var dumpCurrentDirectory: Self {
-        Self()
-    }
-}
-
-// MARK: -
-struct DumpCurrentDirectoryTrait: TestTrait, TestScoping, SuiteTrait {
-    private func setUp() async throws {
-        print(
-            "\u{001B}[36;1m",
-            "Current directory: \(FilePath.current.absolutePath)",
-            "\u{001B}[0m",
-            separator: "",
-        )
-    }
-
-    func provideScope(
-        for test: Test,
-        testCase: Test.Case?,
-        performing function: @concurrent () async throws -> Void
-    ) async throws {
-        try await setUp()
-        try await function()
     }
 }
