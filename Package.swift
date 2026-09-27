@@ -47,9 +47,11 @@ package.targets
         ]
     }
 
+#if canImport(Darwin)
 if isDevelopment {
     package.dependencies.append(.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", exact: "0.65.1"))
     package.targets.forEach {
         $0.plugins = [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
     }
 }
+#endif

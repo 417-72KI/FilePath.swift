@@ -1,6 +1,7 @@
 .build
 .DS_Store
-.swiftpm
+.swiftpm/*
+!.swiftpm/*.xctestplan
 .netrc
 DerivedData
 Package.resolved
