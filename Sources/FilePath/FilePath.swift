@@ -37,3 +37,12 @@ public extension FilePath {
         Self(url: .homeDirectory)
     }
 }
+
+// MARK: -
+public extension FilePath {
+    @discardableResult
+    func move(to destination: FilePath) throws -> FilePath {
+        try fm.moveItem(at: url, to: destination.url)
+        return destination
+    }
+}
