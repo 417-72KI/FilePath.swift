@@ -4,7 +4,7 @@ macos_runners:
       "27.0": # Swift 6.4
         destination:
           - platform=macOS
-          - platform=iOS Simulator,name=iPhone 18 Pro
+          # - platform=iOS Simulator,name=iPhone 18 Pro
           # - platform=tvOS Simulator,name=Apple TV 4K (3rd generation)
           # - platform=watchOS Simulator,name=Apple Watch Series 12 (46mm)
   macos-26: # ref: https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md
@@ -12,13 +12,13 @@ macos_runners:
       "26.6": # Swift 6.3
         destination:
           - platform=macOS
-          - platform=iOS Simulator,name=iPhone 17 Pro
+          # - platform=iOS Simulator,name=iPhone 17 Pro
           # - platform=tvOS Simulator,name=Apple TV 4K (3rd generation)
           # - platform=watchOS Simulator,name=Apple Watch Series 11 (46mm)
       "26.3": # Swift 6.2
         destination:
           - platform=macOS
-          - platform=iOS Simulator,name=iPhone 17 Pro
+          # - platform=iOS Simulator,name=iPhone 17 Pro
           # - platform=tvOS Simulator,name=Apple TV 4K (3rd generation)
           # - platform=watchOS Simulator,name=Apple Watch Series 11 (46mm)
 linux_runner:
