@@ -34,6 +34,8 @@ struct FilePathTests {
     }
 
     @Test(arguments: [
+        ("foo/bar", "foo/"),
+        ("~/foo/bar", "~/foo/"),
         ("/foo/bar", "/foo/"),
         ("/foo/", "/"),
         ("/", "/"),
