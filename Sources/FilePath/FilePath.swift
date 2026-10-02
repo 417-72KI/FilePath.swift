@@ -55,10 +55,14 @@ public extension FilePath {
     }
 
     func move(toDirectory directory: FilePath) throws(FilePathError) -> FilePath {
-        guard directory.isDirectory else {
+        switch directory.existingStatus {
+        case .notExist:
+            throw FilePathError.notExists(directory)
+        case .file:
             throw FilePathError.notDirectory(directory)
+        case .directory:
+            let destination = directory + url.lastPathComponent
+            return try move(to: destination)
         }
-        let destination = directory + url.lastPathComponent
-        return try move(to: destination)
     }
 }
