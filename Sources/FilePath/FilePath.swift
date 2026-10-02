@@ -20,6 +20,12 @@ public extension FilePath {
     nonisolated var absolutePath: String { url.absoluteURL.path(percentEncoded: false) }
 }
 
+public extension FilePath {
+    nonisolated var parent: FilePath {
+        FilePath(url: url.deletingLastPathComponent())
+    }
+}
+
 // MARK: -
 public extension FilePath {
     nonisolated static func + (lhs: FilePath, rhs: String) -> FilePath {

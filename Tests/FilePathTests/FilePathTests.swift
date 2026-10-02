@@ -33,6 +33,15 @@ struct FilePathTests {
         #expect(path.absolutePath == expectedURL.absoluteURL.path())
     }
 
+    @Test(arguments: [
+        ("/foo/bar", "/foo/"),
+        ("/foo/", "/"),
+        ("/", "/"),
+    ])
+    func parent(_ path: FilePath, _ expected: FilePath) async throws {
+        #expect(path.parent == expected)
+    }
+
     @Test
     func current() async throws {
         let fm = FileManager.default
