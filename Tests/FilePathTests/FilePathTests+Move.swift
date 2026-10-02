@@ -53,7 +53,7 @@ extension FilePathTests {
             ("dir_empty", "dir2"),
             ("dir1/subdir_1/subdir_2/1.txt", "dir2/subdir_1/subdir_2/1.txt"),
         ])
-        func conflict(_ source: String, _ destination: String) async throws {
+        func destinationAlreadyExists(_ source: String, _ destination: String) async throws {
             let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: source))
             let destinationPath = FilePath(url: UsingTemporaryDirectory.current.appending(path: destination))
             try #require(await path.exists)
@@ -124,7 +124,7 @@ extension FilePathTests {
         }
 
         @Test
-        func conflict() async throws {
+        func destinationAlreadyExists() async throws {
             let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "dir1/subdir_1"))
             let directoryPath = FilePath(url: UsingTemporaryDirectory.current.appending(path: "dir2"))
             let destinationPath = FilePath(url: UsingTemporaryDirectory.current.appending(path: "dir2/subdir_1"))
