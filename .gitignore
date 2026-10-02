@@ -5,3 +5,4 @@
 .netrc
 DerivedData
 Package.resolved
+test_output/

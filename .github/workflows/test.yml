@@ -62,6 +62,10 @@ jobs:
             -derivedDataPath '.build' \
             -resultBundlePath 'test_output/TestResult.xcresult' \
             clean test | xcpretty
+      - name: Convert test result to JSON
+        run: |
+          mkdir -p test_output/json
+          xcrun xcresulttool get test-results tests --path 'test_output/TestResult.xcresult' > 'test_output/result.json'
       - name: Upload test result
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: success() || failure()
@@ -92,3 +96,16 @@ jobs:
             ${{ runner.os }}-${{ matrix.swift }}-
       - name: test
         run: swift test
+  danger:
+    name: Danger
+    needs: [test-macos, test-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/download-artifact@v7
+        with:
+          path: test_output
+      - name: Run Danger
+        uses: 417-72KI/danger-swiftlint@v6.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
