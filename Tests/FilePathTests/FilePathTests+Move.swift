@@ -39,10 +39,10 @@ extension FilePathTests {
             let destinationPath = FilePath(url: UsingTemporaryDirectory.current.appending(path: "not_existing_moved"))
             try #require(await !path.exists)
             try #require(await !destinationPath.exists)
-            let error = try await #require(throws: FilePathError.self) {
+            let error = try await #require(throws: MoveError.self) {
                 try await path.move(to: destinationPath)
             }
-            #expect(error == .notExists(path))
+            #expect(error == .sourceNotExist(path))
         }
 
         @Test(arguments: [
@@ -56,10 +56,10 @@ extension FilePathTests {
             let destinationPath = FilePath(url: UsingTemporaryDirectory.current.appending(path: destination))
             try #require(await path.exists)
             try #require(await destinationPath.exists)
-            let error = try await #require(throws: FilePathError.self) {
+            let error = try await #require(throws: MoveError.self) {
                 try await path.move(to: destinationPath)
             }
-            #expect(error == .conflict(path, destinationPath))
+            #expect(error == .destinationAlreadyExists(destinationPath))
         }
     }
 
@@ -103,10 +103,10 @@ extension FilePathTests {
             let destinationPath = FilePath(url: UsingTemporaryDirectory.current.appending(path: "not_existing"))
             try #require(await path.exists)
             try #require(await !destinationPath.exists)
-            let error = try await #require(throws: FilePathError.self) {
+            let error = try await #require(throws: MoveError.self) {
                 try await path.move(toDirectory: destinationPath)
             }
-            #expect(error == .notExists(destinationPath))
+            #expect(error == .destinationNotExist(destinationPath))
         }
 
         @Test
@@ -115,10 +115,10 @@ extension FilePathTests {
             let destinationPath = FilePath(url: UsingTemporaryDirectory.current.appending(path: "dir2/subdir_1/subdir_2/1.txt"))
             try #require(await destinationPath.exists)
             try #require(await destinationPath.isFile)
-            let error = try await #require(throws: FilePathError.self) {
+            let error = try await #require(throws: MoveError.self) {
                 try await path.move(toDirectory: destinationPath)
             }
-            #expect(error == .notDirectory(destinationPath))
+            #expect(error == .destinationIsNotDirectory(destinationPath))
         }
 
         @Test
@@ -129,10 +129,10 @@ extension FilePathTests {
             try #require(await path.exists)
             try #require(await directoryPath.exists)
             try #require(await destinationPath.exists)
-            let error = try await #require(throws: FilePathError.self) {
+            let error = try await #require(throws: MoveError.self) {
                 try await path.move(to: destinationPath)
             }
-            #expect(error == .conflict(path, destinationPath))
+            #expect(error == .destinationAlreadyExists(destinationPath))
         }
     }
 }

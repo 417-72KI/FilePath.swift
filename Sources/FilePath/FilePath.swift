@@ -1,6 +1,6 @@
 import Foundation
 
-public struct FilePath {
+public struct FilePath: Sendable {
     var url: URL
 }
 
@@ -47,25 +47,31 @@ public extension FilePath {
 // MARK: -
 public extension FilePath {
     @discardableResult
-    func move(to destination: FilePath) throws(FilePathError) -> FilePath {
+    func move(to destination: FilePath) throws(MoveError) -> FilePath {
+        guard exists else {
+            throw MoveError.sourceNotExist(self)
+        }
+        guard !destination.exists else {
+            throw MoveError.destinationAlreadyExists(destination)
+        }
         do {
             try fm.moveItem(at: url, to: destination.url)
             return destination
         } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
-            throw FilePathError.notExists(self)
+            throw MoveError.sourceNotExist(self)
         } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileWriteFileExistsError {
-            throw FilePathError.conflict(self, destination)
+            throw MoveError.destinationAlreadyExists(destination)
         } catch {
-            throw FilePathError.unexpected(origin: error)
+            throw MoveError.unexpected(origin: error)
         }
     }
 
-    func move(toDirectory directory: FilePath) throws(FilePathError) -> FilePath {
+    func move(toDirectory directory: FilePath) throws(MoveError) -> FilePath {
         switch directory.existingStatus {
         case .notExist:
-            throw FilePathError.notExists(directory)
+            throw MoveError.destinationNotExist(directory)
         case .file:
-            throw FilePathError.notDirectory(directory)
+            throw MoveError.destinationIsNotDirectory(directory)
         case .directory:
             let destination = directory + url.lastPathComponent
             return try move(to: destination)
