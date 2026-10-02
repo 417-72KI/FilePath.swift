@@ -1,18 +1,29 @@
 import Foundation
 
+enum ExistingStatus {
+    case file
+    case directory
+    case notExist
+}
+
+// MARK: -
 public extension FilePath {
-    var exists: Bool { fm.fileExists(atPath: path) }
+    var exists: Bool { existingStatus != .notExist }
 
-    var isFile: Bool {
-        var isDir = ObjCBool(false)
-        guard fm.fileExists(atPath: path, isDirectory: &isDir) else { return false }
-        return !isDir.boolValue
-    }
+    var isFile: Bool { existingStatus == .file }
 
-    var isDirectory: Bool {
+    var isDirectory: Bool { existingStatus == .directory }
+}
+
+// MARK: -
+extension FilePath {
+    var existingStatus: ExistingStatus {
         var isDir = ObjCBool(false)
-        guard fm.fileExists(atPath: path, isDirectory: &isDir) else { return false }
-        return isDir.boolValue
+        return if fm.fileExists(atPath: path, isDirectory: &isDir) {
+            isDir.boolValue ? .directory : .file
+        } else {
+            .notExist
+        }
     }
 }
 
