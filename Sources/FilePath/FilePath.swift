@@ -1,7 +1,7 @@
 import Foundation
 
 public struct FilePath {
-    let url: URL
+    var url: URL
 }
 
 public extension FilePath {
@@ -18,6 +18,12 @@ public extension FilePath {
     nonisolated var path: String { url.path(percentEncoded: false) }
 
     nonisolated var absolutePath: String { url.absoluteURL.path(percentEncoded: false) }
+}
+
+public extension FilePath {
+    nonisolated var parent: FilePath {
+        FilePath(url: url.deletingLastPathComponent())
+    }
 }
 
 // MARK: -
