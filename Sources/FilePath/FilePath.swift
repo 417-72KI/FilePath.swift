@@ -1,7 +1,7 @@
 import Foundation
 
 public struct FilePath {
-    let url: URL
+    var url: URL
 }
 
 public extension FilePath {
