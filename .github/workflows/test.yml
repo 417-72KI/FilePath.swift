@@ -8,6 +8,12 @@ on:
       - Sources/**/*.swift
       - Tests/**/*.swift
       - .github/matrix.yml
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+  issues: write
+  statuses: write
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
@@ -70,6 +76,28 @@ jobs:
           path: test_output
           if-no-files-found: error
           retention-days: 1
+  merge-xcresult:
+    name: Merge xcresult
+    needs: test-macos
+    runs-on: macos-latest
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          path: test_output
+      - name: Merge
+        run: |
+          xcrun xcresulttool merge --output-path 'TestResult.xcresult' test_output/**/TestResult.xcresult
+          xcrun xcresulttool get test-results tests --path 'TestResult.xcresult' > 'result.json'
+      - name: Upload test result
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: success() || failure()
+        with:
+          name: merged-test-result
+          path: |
+            TestResult.xcresult
+            result.json
+          if-no-files-found: error
+          retention-days: 1
   test-linux:
     name: Test(Linux)
     needs: extract-matrix
@@ -92,3 +120,18 @@ jobs:
             ${{ runner.os }}-${{ matrix.swift }}-
       - name: test
         run: swift test
+  danger:
+    name: Danger
+    needs: merge-xcresult
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/download-artifact@v7
+        with:
+          name: merged-test-result
+          path: test_output
+      - run: find test_output
+      - name: Run Danger
+        uses: 417-72KI/danger-swiftlint@v6.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
