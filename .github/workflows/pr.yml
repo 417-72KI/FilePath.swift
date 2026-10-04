@@ -8,6 +8,8 @@ on:
       - Sources/**/*.swift
       - Tests/**/*.swift
       - .github/matrix.yml
+      - Dangerfile.swift
+      - DangerfileExtensions/**/*.swift
 permissions:
   contents: read
 concurrency:
