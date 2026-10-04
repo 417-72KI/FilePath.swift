@@ -97,7 +97,7 @@ jobs:
             TestResult.xcresult
             result.json
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 30
   test-linux:
     name: Test(Linux)
     needs: extract-matrix
