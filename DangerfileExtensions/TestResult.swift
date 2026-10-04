@@ -61,7 +61,7 @@ extension TestResult {
         let nodeIdentifier: String?
         let nodeIdentifierURL: String?
         let nodeType: String
-        let result: Result
+        let result: Result?
     }
 }
 
@@ -71,7 +71,7 @@ extension TestResult.TestNode {
 
 extension TestResult.TestNode: CustomStringConvertible {
     var description: String {
-        "\(name) - \(result.rawValue)"
+        "\(name)\(result.map { " - (\($0.rawValue))" } ?? "")"
     }
 }
 
@@ -80,6 +80,7 @@ extension TestResult.TestNode {
         case passed = "Passed"
         case failed = "Failed"
         case skipped = "Skipped"
+        case expectedFailure = "Expected Failure"
     }
 }
 
