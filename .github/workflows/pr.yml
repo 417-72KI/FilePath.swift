@@ -10,10 +10,6 @@ on:
       - .github/matrix.yml
 permissions:
   contents: read
-  checks: write
-  pull-requests: write
-  issues: write
-  statuses: write
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
@@ -124,6 +120,11 @@ jobs:
     name: Danger
     needs: merge-xcresult
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+      issues: write
+      statuses: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/download-artifact@v7
