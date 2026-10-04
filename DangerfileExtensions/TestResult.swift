@@ -61,17 +61,25 @@ extension TestResult {
         let nodeIdentifier: String?
         let nodeIdentifierURL: String?
         let nodeType: String
-        let result: String
+        let result: Result
     }
 }
 
 extension TestResult.TestNode {
-    var isPassed: Bool { result.lowercased() == "passed" }
+    var isPassed: Bool { result == .passed }
 }
 
 extension TestResult.TestNode: CustomStringConvertible {
     var description: String {
-        "\(name) - \(result)"
+        "\(name) - \(result.rawValue)"
+    }
+}
+
+extension TestResult.TestNode {
+    enum Result: String, Decodable {
+        case passed = "Passed"
+        case failed = "Failed"
+        case skipped = "Skipped"
     }
 }
 
