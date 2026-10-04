@@ -80,7 +80,7 @@ jobs:
     if: always() && !cancelled()
     runs-on: macos-latest
     steps:
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           path: test_output
       - name: Merge
@@ -129,11 +129,11 @@ jobs:
       statuses: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: merged-test-result
           path: test_output
       - name: Run Danger
-        uses: 417-72KI/danger-swiftlint@v6.2
+        uses: 417-72KI/danger-swiftlint@v6.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
