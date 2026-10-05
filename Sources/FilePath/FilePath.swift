@@ -66,7 +66,11 @@ public extension FilePath {
             try fm.moveItem(at: url, to: destination.url)
             return destination
         } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
-            throw MoveError.sourceNotExist(self)
+            throw if exists {
+                MoveError.destinationNotExist(destination.parent)
+            } else {
+                MoveError.sourceNotExist(self)
+            }
         } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileWriteFileExistsError {
             throw MoveError.destinationAlreadyExists(destination)
         } catch {
