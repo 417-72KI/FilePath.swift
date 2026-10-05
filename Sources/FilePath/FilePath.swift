@@ -51,6 +51,9 @@ public extension FilePath {
         guard exists else {
             throw MoveError.sourceNotExist(self)
         }
+        guard destination.parent.exists else {
+            throw MoveError.destinationNotExist(destination.parent)
+        }
         guard !destination.exists else {
             throw MoveError.destinationAlreadyExists(destination)
         }

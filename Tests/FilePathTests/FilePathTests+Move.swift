@@ -63,6 +63,18 @@ extension FilePathTests {
             }
             #expect(error == .destinationAlreadyExists(destinationPath))
         }
+
+        @Test
+        func destinationNotExist() async throws {
+            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "dir1/subdir_1/subdir_2/1.txt"))
+            let destinationPath = FilePath(url: UsingTemporaryDirectory.current.appending(path: "not_existing/1.txt"))
+            try #require(await path.exists)
+            try #require(await !destinationPath.parent.exists)
+            let error = try await #require(throws: MoveError.self) {
+                try await path.move(to: destinationPath)
+            }
+            #expect(error == .destinationNotExist(destinationPath.parent))
+        }
     }
 
     @Suite
