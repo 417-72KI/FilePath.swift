@@ -144,7 +144,7 @@ extension FilePathTests {
             try #require(await directoryPath.exists)
             try #require(await destinationPath.exists)
             let error = try await #require(throws: MoveError.self) {
-                try await path.move(to: destinationPath)
+                try await path.move(toDirectory: directoryPath)
             }
             #expect(error == .destinationAlreadyExists(destinationPath))
         }
