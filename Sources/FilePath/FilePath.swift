@@ -1,11 +1,11 @@
 import Foundation
 
 public struct FilePath: Sendable {
-    var url: URL
+    nonisolated var url: URL
 }
 
 public extension FilePath {
-    init(_ path: String) {
+    nonisolated init(_ path: String) {
         self.url = URL(
             filePath: path,
             directoryHint: .checkFileSystem,
@@ -47,7 +47,7 @@ public extension FilePath {
 // MARK: -
 public extension FilePath {
     @discardableResult
-    func move(to destination: FilePath) throws(MoveError) -> FilePath {
+    nonisolated func move(to destination: FilePath) throws(MoveError) -> FilePath {
         guard exists else {
             throw MoveError.sourceNotExist(self)
         }
@@ -78,7 +78,7 @@ public extension FilePath {
         }
     }
 
-    func move(toDirectory directory: FilePath) throws(MoveError) -> FilePath {
+    nonisolated func move(toDirectory directory: FilePath) throws(MoveError) -> FilePath {
         switch directory.existingStatus {
         case .notExist:
             throw MoveError.destinationNotExist(directory)

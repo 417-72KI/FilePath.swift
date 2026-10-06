@@ -14,8 +14,8 @@ struct FilePathTests {
             filePath: path,
             relativeTo: .currentDirectory()
         )
-        let path = await FilePath(path)
-        #expect(await path.url == expectedURL)
+        let path = FilePath(path)
+        #expect(path.url == expectedURL)
         #expect(path.path == expectedURL.path())
         #expect(path.absolutePath == expectedURL.absoluteURL.path())
     }
@@ -27,8 +27,8 @@ struct FilePathTests {
     ])
     func absolutePath(_ path: String) async throws {
         let expectedURL = URL(filePath: path)
-        let path = await FilePath(path)
-        #expect(await path.url == expectedURL)
+        let path = FilePath(path)
+        #expect(path.url == expectedURL)
         #expect(path.path == expectedURL.path())
         #expect(path.absolutePath == expectedURL.absoluteURL.path())
     }
@@ -47,7 +47,7 @@ struct FilePathTests {
     @Test
     func current() async throws {
         let fm = FileManager.default
-        #expect(await FilePath.current == FilePath(fm.currentDirectoryPath))
+        #expect(FilePath.current == FilePath(fm.currentDirectoryPath))
     }
 
     @Test
@@ -56,7 +56,7 @@ struct FilePathTests {
         #if os(iOS) || os(tvOS) || os(watchOS)
         #expect(FilePath.home == FilePath("~/"))
         #else
-        #expect(await FilePath.home == FilePath(fm.homeDirectoryForCurrentUser.path()))
+        #expect(FilePath.home == FilePath(fm.homeDirectoryForCurrentUser.path()))
         #endif
     }
 
@@ -105,18 +105,18 @@ struct FilePathTests {
         func file() async throws {
             let fileURL = UsingTemporaryDirectory.current.appending(path: "test.txt")
             let path = FilePath(url: fileURL)
-            #expect(await path.exists)
-            #expect(await path.isFile)
-            #expect(await !path.isDirectory)
+            #expect(path.exists)
+            #expect(path.isFile)
+            #expect(!path.isDirectory)
         }
 
         @Test
         func directory() async throws {
             let fileURL = UsingTemporaryDirectory.current.appending(path: "dir1")
             let path = FilePath(url: fileURL)
-            #expect(await path.exists)
-            #expect(await !path.isFile)
-            #expect(await path.isDirectory)
+            #expect(path.exists)
+            #expect(!path.isFile)
+            #expect(path.isDirectory)
         }
     }
 }
