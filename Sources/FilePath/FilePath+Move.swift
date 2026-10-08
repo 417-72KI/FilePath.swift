@@ -3,20 +3,6 @@ import Foundation
 public extension FilePath {
     @discardableResult
     nonisolated func move(to destination: FilePath) throws(MoveError) -> FilePath {
-        guard exists else {
-            throw MoveError.sourceNotExist(self)
-        }
-        switch destination.parent.existingStatus {
-        case .notExist:
-            throw MoveError.destinationNotExist(destination.parent)
-        case .file:
-            throw MoveError.destinationIsNotDirectory(destination.parent)
-        case .directory:
-            break
-        }
-        guard !destination.exists else {
-            throw MoveError.destinationAlreadyExists(destination)
-        }
         do {
             try fm.moveItem(at: url, to: destination.url)
             return destination
