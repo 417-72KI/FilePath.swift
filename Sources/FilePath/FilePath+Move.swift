@@ -19,6 +19,7 @@ public extension FilePath {
         }
     }
 
+    @discardableResult
     nonisolated func move(toDirectory directory: FilePath) throws(MoveError) -> FilePath {
         switch directory.existingStatus {
         case .notExist:
