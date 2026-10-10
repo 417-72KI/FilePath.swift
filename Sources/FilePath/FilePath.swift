@@ -1,11 +1,11 @@
 import Foundation
 
-public struct FilePath {
-    var url: URL
+public struct FilePath: Sendable {
+    nonisolated var url: URL
 }
 
 public extension FilePath {
-    init(_ path: String) {
+    nonisolated init(_ path: String) {
         self.url = URL(
             filePath: path,
             directoryHint: .checkFileSystem,

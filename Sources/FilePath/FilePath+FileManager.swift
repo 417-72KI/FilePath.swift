@@ -1,25 +1,32 @@
 import Foundation
 
+nonisolated enum ExistingStatus {
+    case file
+    case directory
+    case notExist
+}
+
+// MARK: -
 public extension FilePath {
-    var exists: Bool { fm.fileExists(atPath: path) }
+    nonisolated var exists: Bool { existingStatus != .notExist }
 
-    var isFile: Bool {
-        var isDir = ObjCBool(false)
-        guard fm.fileExists(atPath: path, isDirectory: &isDir) else { return false }
-        return !isDir.boolValue
-    }
+    nonisolated var isFile: Bool { existingStatus == .file }
 
-    var isDirectory: Bool {
+    nonisolated var isDirectory: Bool { existingStatus == .directory }
+}
+
+// MARK: -
+extension FilePath {
+    nonisolated var existingStatus: ExistingStatus {
         var isDir = ObjCBool(false)
-        guard fm.fileExists(atPath: path, isDirectory: &isDir) else { return false }
-        return isDir.boolValue
+        return if fm.fileExists(atPath: path, isDirectory: &isDir) {
+            isDir.boolValue ? .directory : .file
+        } else {
+            .notExist
+        }
     }
 }
 
 extension FilePath {
-    static let fm = FileManager.default
-}
-
-extension FilePath {
-    var fm: FileManager { Self.fm }
+    nonisolated var fm: FileManager { .default }
 }

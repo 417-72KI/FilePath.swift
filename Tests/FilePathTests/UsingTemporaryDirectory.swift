@@ -50,7 +50,7 @@ private extension UsingTemporaryDirectory {
                 atomically: true,
                 encoding: .utf8
             )
-        let directoriesToCreate = 3
+        let directoriesToCreate = 2
         try (1...directoriesToCreate).forEach {
             let testDirectoryURL = directory.appending(
                 components: "dir\($0)",
@@ -78,6 +78,14 @@ private extension UsingTemporaryDirectory {
             includingPropertiesForKeys: [.isDirectoryKey]
         )
         try #require(directoryURLs.filter(\.hasDirectoryPath).count == directoriesToCreate)
+        let testEmptyDirectoryURL = directory.appending(
+            components: "dir_empty",
+            directoryHint: .isDirectory
+        )
+        try fm.createDirectory(
+            at: testEmptyDirectoryURL,
+            withIntermediateDirectories: true
+        )
     }
 
     func cleanUp(
