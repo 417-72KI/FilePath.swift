@@ -25,4 +25,20 @@ public extension FilePath {
             }
         }
     }
+
+    nonisolated var descendants: [FilePath] {
+        get throws {
+            switch existingStatus {
+            case .notExist: throw FileStateError.notExist(self)
+            case .file: throw FileStateError.notDirectory(self)
+            case .directory: break
+            }
+            var children = [URL]()
+            let enumerator = fm.enumerator(at: url, includingPropertiesForKeys: nil)
+            while let url = enumerator?.nextObject() as? URL {
+                children.append(url)
+            }
+            return children.sorted { $0.path() < $1.path() }.map(Self.init)
+        }
+    }
 }
