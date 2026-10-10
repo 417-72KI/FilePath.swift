@@ -3,6 +3,10 @@ import Foundation
 public extension FilePath {
     nonisolated var children: [FilePath] {
         get throws {
+            #if os(Linux)
+            // On Linux, `contentsOfDirectory(at:includingPropertiesForKeys:)` won't throw an error if the path is a file, but will return an empty array. So we need to check if it's a file first.
+            if isFile { throw FileStateError.notDirectory(self) }
+            #endif
             do {
                 let contents = try fm.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
                 return contents.map(Self.init)
