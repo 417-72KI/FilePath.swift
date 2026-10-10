@@ -17,7 +17,7 @@ extension MoveError: Equatable {
         case let (.destinationNotExist(lhsPath), .destinationNotExist(rhsPath)): lhsPath == rhsPath
         case let (.destinationIsNotDirectory(lhsPath), .destinationIsNotDirectory(rhsPath)): lhsPath == rhsPath
         case let (.destinationAlreadyExists(lhsPath), .destinationAlreadyExists(rhsPath)): lhsPath == rhsPath
-        case let (.unexpected(lhsError), .unexpected(rhsError)): lhsError.localizedDescription == rhsError.localizedDescription
+        case let (.unexpected(lhsError), .unexpected(rhsError)): (lhsError as NSError) == (rhsError as NSError)
         default: false
         }
     }
