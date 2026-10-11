@@ -34,7 +34,7 @@ extension FilePathTests {
         func notReadable() async throws {
             let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "unreachable_file.txt"))
             try #require(path.exists)
-            try withKnownIssue {
+            try withKnownIssue("Running with root privileges, files without read permission still can be read.") {
                 let error = try #require(throws: ReadError.self) {
                     try path.read()
                 }
@@ -87,7 +87,7 @@ extension FilePathTests {
         func notReadable() async throws {
             let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "unreachable_file.txt"))
             try #require(path.exists)
-            try withKnownIssue {
+            try withKnownIssue("Running with root privileges, files without read permission still can be read.") {
                 let error = try #require(throws: ReadError.self) {
                     try path.readString()
                 }
