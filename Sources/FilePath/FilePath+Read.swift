@@ -4,36 +4,16 @@ public extension FilePath {
     nonisolated func read() throws(ReadError) -> Data {
         do {
             return try Data(contentsOf: url)
-        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
-            throw ReadError.notExist(self)
-        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoPermissionError {
-            throw ReadError.notReadable(self)
-        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadUnknownError {
-            if let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? POSIXError,
-               underlyingError.code == .EISDIR {
-                throw ReadError.notFile(self)
-            }
-            throw ReadError.unexpected(origin: error)
         } catch {
-            throw ReadError.unexpected(origin: error)
+            throw error.asReadError(self)
         }
     }
 
     nonisolated func readString(encoding: String.Encoding = .utf8) throws(ReadError) -> String {
         do {
             return try String(contentsOf: url, encoding: encoding)
-        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
-            throw ReadError.notExist(self)
-        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoPermissionError {
-            throw ReadError.notReadable(self)
-        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadUnknownError {
-            if let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? POSIXError,
-               underlyingError.code == .EISDIR {
-                throw ReadError.notFile(self)
-            }
-            throw ReadError.unexpected(origin: error)
         } catch {
-            throw ReadError.unexpected(origin: error)
+            throw error.asReadError(self)
         }
     }
 }
@@ -55,5 +35,30 @@ extension ReadError: Equatable {
         case let (.unexpected(lhsError), .unexpected(rhsError)): (lhsError as NSError) == (rhsError as NSError)
         default: false
         }
+    }
+}
+
+// MARK: -
+private extension Error {
+    nonisolated func asReadError(_ filePath: FilePath) -> ReadError {
+        if let readError = self as? ReadError {
+            return readError
+        }
+        let nsError = self as NSError
+        if nsError.domain == NSCocoaErrorDomain {
+            switch nsError.code {
+            case NSFileReadNoSuchFileError:
+                return .notExist(filePath)
+            case NSFileReadNoPermissionError:
+                return .notReadable(filePath)
+            case NSFileReadUnknownError:
+                if let underlyingError = nsError.userInfo[NSUnderlyingErrorKey] as? POSIXError,
+                   underlyingError.code == .EISDIR {
+                    return .notFile(filePath)
+                }
+            default: break
+            }
+        }
+        return .unexpected(origin: self)
     }
 }
