@@ -12,6 +12,8 @@ public extension FilePath {
     nonisolated func readString(encoding: String.Encoding = .utf8) throws(ReadError) -> String {
         do {
             return try String(contentsOf: url, encoding: encoding)
+        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadCorruptFileError {
+            throw ReadError.invalidEncoding(self)
         } catch {
             throw error.asReadError(self)
         }
@@ -58,8 +60,6 @@ private extension Error {
                    underlyingError.code == .EISDIR {
                     return .notFile(filePath)
                 }
-            case NSFileReadCorruptFileError:
-                return .invalidEncoding(filePath)
             default: break
             }
         }
