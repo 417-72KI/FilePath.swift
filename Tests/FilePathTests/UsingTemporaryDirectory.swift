@@ -94,9 +94,10 @@ private extension UsingTemporaryDirectory {
             atomically: true,
             encoding: .utf8
         )
-        #if !(os(iOS) || os(tvOS) || os(watchOS))
-        try Process.run("/bin/chmod", with: ["000", unreachableFileURL.path()])
-        #endif
+        try fm.setAttributes(
+            [.posixPermissions: 000],
+            ofItemAtPath: unreachableFileURL.path()
+        )
     }
 
     func cleanUp(
