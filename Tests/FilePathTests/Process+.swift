@@ -1,5 +1,6 @@
 import Foundation
 
+#if !(os(iOS) || os(tvOS) || os(watchOS))
 extension Process {
     @discardableResult
     static func run(_ executableURL: URL, with arguments: [String] = []) throws -> String {
@@ -20,3 +21,4 @@ extension Process {
         try run(URL(filePath: executablePath), with: arguments)
     }
 }
+#endif

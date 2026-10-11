@@ -40,7 +40,11 @@ extension FilePathTests {
                 }
                 #expect(error == .notReadable(path))
             } when: {
+                #if os(iOS) || os(tvOS) || os(watchOS)
+                true
+                #else
                 geteuid() == 0 // Root user
+                #endif
             }
         }
 
@@ -93,7 +97,11 @@ extension FilePathTests {
                 }
                 #expect(error == .notReadable(path))
             } when: {
+                #if os(iOS) || os(tvOS) || os(watchOS)
+                true
+                #else
                 geteuid() == 0 // Root user
+                #endif
             }
         }
 
