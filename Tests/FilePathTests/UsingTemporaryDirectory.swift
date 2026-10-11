@@ -39,6 +39,7 @@ extension UsingTemporaryDirectory: SuiteTrait {
 }
 
 private extension UsingTemporaryDirectory {
+    // swiftlint:disable:next function_body_length
     func setUp(
         in directory: URL,
         withFileManager fm: FileManager
@@ -86,6 +87,14 @@ private extension UsingTemporaryDirectory {
             at: testEmptyDirectoryURL,
             withIntermediateDirectories: true
         )
+
+        let unreachableFileURL = directory.appending(path: "unreachable_file.txt")
+        try "unreachable".write(
+            to: unreachableFileURL,
+            atomically: true,
+            encoding: .utf8
+        )
+        try Process.run("/bin/chmod", with: ["000", unreachableFileURL.path()])
     }
 
     func cleanUp(
