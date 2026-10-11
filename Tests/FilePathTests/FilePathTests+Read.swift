@@ -30,14 +30,18 @@ extension FilePathTests {
             #expect(error == .notExist(path))
         }
 
-        @Test(.disabled(if: geteuid() == 0))
+        @Test
         func notReadable() async throws {
             let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "unreachable_file.txt"))
             try #require(path.exists)
-            let error = try #require(throws: ReadError.self) {
-                try path.read()
+            try withKnownIssue {
+                let error = try #require(throws: ReadError.self) {
+                    try path.read()
+                }
+                #expect(error == .notReadable(path))
+            } when: {
+                geteuid() == 0 // Root user
             }
-            #expect(error == .notReadable(path))
         }
 
         @Test
@@ -79,14 +83,18 @@ extension FilePathTests {
             #expect(error == .notExist(path))
         }
 
-        @Test(.disabled(if: geteuid() == 0))
+        @Test
         func notReadable() async throws {
             let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "unreachable_file.txt"))
             try #require(path.exists)
-            let error = try #require(throws: ReadError.self) {
-                try path.readString()
+            try withKnownIssue {
+                let error = try #require(throws: ReadError.self) {
+                    try path.readString()
+                }
+                #expect(error == .notReadable(path))
+            } when: {
+                geteuid() == 0 // Root user
             }
-            #expect(error == .notReadable(path))
         }
 
         @Test
