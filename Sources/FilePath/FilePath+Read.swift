@@ -23,6 +23,7 @@ public enum ReadError: FilePathError {
     case notExist(FilePath)
     case notReadable(FilePath)
     case notFile(FilePath)
+    case invalidEncoding(FilePath)
     case unexpected(origin: any Error)
 }
 
@@ -32,6 +33,7 @@ extension ReadError: Equatable {
         case let (.notExist(lhsPath), .notExist(rhsPath)): lhsPath == rhsPath
         case let (.notReadable(lhsPath), .notReadable(rhsPath)): lhsPath == rhsPath
         case let (.notFile(lhsPath), .notFile(rhsPath)): lhsPath == rhsPath
+        case let (.invalidEncoding(lhsPath), .invalidEncoding(rhsPath)): lhsPath == rhsPath
         case let (.unexpected(lhsError), .unexpected(rhsError)): (lhsError as NSError) == (rhsError as NSError)
         default: false
         }
@@ -56,6 +58,8 @@ private extension Error {
                    underlyingError.code == .EISDIR {
                     return .notFile(filePath)
                 }
+            case NSFileReadCorruptFileError:
+                return .invalidEncoding(filePath)
             default: break
             }
         }
