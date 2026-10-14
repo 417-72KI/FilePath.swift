@@ -94,6 +94,12 @@ private extension UsingTemporaryDirectory {
             .write(to: anotherEncodingFileURL)
         // try #require(String(contentsOf: anotherEncodingFileURL, encoding: .shiftJIS) == "あいうえお")
 
+        let invalidEncodingFileURL = directory.appending(path: "invalid_encoding.txt")
+        // "あいうえ" with UTF-8 and "お" with Shift-JIS
+        // swiftlint:disable:next no_magic_numbers
+        try Data([0xE3, 0x81, 0x82, 0xE3, 0x81, 0x84, 0xE3, 0x81, 0x86, 0xE3, 0x81, 0x88, 0x82, 0xa8])
+            .write(to: invalidEncodingFileURL)
+
         let unreachableFileURL = directory.appending(path: "unreachable_file.txt")
         try "unreachable".write(
             to: unreachableFileURL,

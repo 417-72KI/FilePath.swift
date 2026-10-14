@@ -10,13 +10,11 @@ public extension FilePath {
     }
 
     nonisolated func readString(encoding: String.Encoding = .utf8) throws(ReadError) -> String {
-        do {
-            return try String(contentsOf: url, encoding: encoding)
-        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadCorruptFileError {
+        let data = try read()
+        guard let string = String(data: data, encoding: encoding) else {
             throw ReadError.invalidEncoding(self)
-        } catch {
-            throw error.asReadError(self)
         }
+        return string
     }
 }
 

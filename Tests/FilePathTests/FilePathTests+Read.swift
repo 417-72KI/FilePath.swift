@@ -78,6 +78,11 @@ extension FilePathTests {
             let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "another_encoding.txt"))
             try #require(path.exists)
             try #require(path.isFile)
+            let error = try #require(throws: ReadError.self) {
+                try path.readString(encoding: .utf8)
+            }
+            #expect(error == .invalidEncoding(path))
+
             let content = try path.readString(encoding: .shiftJIS)
             #expect(content == "あいうえお")
         }
@@ -119,7 +124,7 @@ extension FilePathTests {
 
         @Test
         func invalidEncoding() async throws {
-            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "another_encoding.txt"))
+            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "invalid_encoding.txt"))
             try #require(path.exists)
             try #require(path.isFile)
             let error = try #require(throws: ReadError.self) {
