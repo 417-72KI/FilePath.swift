@@ -39,6 +39,7 @@ extension UsingTemporaryDirectory: SuiteTrait {
 }
 
 private extension UsingTemporaryDirectory {
+    // swiftlint:disable:next function_body_length
     func setUp(
         in directory: URL,
         withFileManager fm: FileManager
@@ -85,6 +86,29 @@ private extension UsingTemporaryDirectory {
         try fm.createDirectory(
             at: testEmptyDirectoryURL,
             withIntermediateDirectories: true
+        )
+
+        let anotherEncodingFileURL = directory.appending(path: "another_encoding.txt")
+        // swiftlint:disable:next no_magic_numbers
+        try Data([0x82, 0xa0, 0x82, 0xa2, 0x82, 0xa4, 0x82, 0xa6, 0x82, 0xa8])
+            .write(to: anotherEncodingFileURL)
+        // try #require(String(contentsOf: anotherEncodingFileURL, encoding: .shiftJIS) == "あいうえお")
+
+        let invalidEncodingFileURL = directory.appending(path: "invalid_encoding.txt")
+        // "あいうえ" with UTF-8 and "お" with Shift-JIS
+        // swiftlint:disable:next no_magic_numbers
+        try Data([0xE3, 0x81, 0x82, 0xE3, 0x81, 0x84, 0xE3, 0x81, 0x86, 0xE3, 0x81, 0x88, 0x82, 0xa8])
+            .write(to: invalidEncodingFileURL)
+
+        let unreachableFileURL = directory.appending(path: "unreachable_file.txt")
+        try "unreachable".write(
+            to: unreachableFileURL,
+            atomically: true,
+            encoding: .utf8
+        )
+        try fm.setAttributes(
+            [.posixPermissions: 000],
+            ofItemAtPath: unreachableFileURL.path()
         )
     }
 
