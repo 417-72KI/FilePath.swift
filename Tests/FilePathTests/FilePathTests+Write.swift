@@ -69,10 +69,14 @@ extension FilePathTests {
         func permissionDenied() async throws {
             let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "unreachable_directory/test.txt"))
             try #require(path.parent.isDirectory)
-            let error = try #require(throws: WriteError.self) {
-                try path.write(Data("Hello, World!".utf8))
+            try withKnownIssue("Running with root privileges, files without read permission still can be read.") {
+                let error = try #require(throws: WriteError.self) {
+                    try path.write(Data("Hello, World!".utf8))
+                }
+                #expect(error == .permissionDenied(path))
+            } when: {
+                geteuid() == 0 // Root user
             }
-            #expect(error == .permissionDenied(path))
         }
     }
 }
