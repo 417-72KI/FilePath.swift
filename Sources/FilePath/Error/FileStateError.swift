@@ -16,3 +16,26 @@ extension FileStateError: Equatable {
         }
     }
 }
+
+// MARK: -
+extension Error {
+    nonisolated func asFileStateError(filePath: FilePath) -> FileStateError {
+        if let fileStateError = self as? FileStateError {
+            return fileStateError
+        }
+        let nsError = self as NSError
+        if nsError.domain == NSCocoaErrorDomain {
+            switch nsError.code {
+            case NSFileReadNoSuchFileError:
+                return .notExist(filePath)
+            case NSFileReadUnknownError:
+                if let underlyingError = nsError.userInfo[NSUnderlyingErrorKey] as? POSIXError,
+                   underlyingError.code == .ENOTDIR {
+                    return .notDirectory(filePath)
+                }
+            default: break
+            }
+        }
+        return .unexpected(origin: self)
+    }
+}
