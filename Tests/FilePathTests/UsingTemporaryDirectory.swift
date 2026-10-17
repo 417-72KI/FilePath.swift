@@ -110,12 +110,29 @@ private extension UsingTemporaryDirectory {
             [.posixPermissions: 000],
             ofItemAtPath: unreachableFileURL.path()
         )
+
+        let unreachableDirectoryURL = directory.appending(path: "unreachable_directory")
+        try fm.createDirectory(
+            at: unreachableDirectoryURL,
+            withIntermediateDirectories: true
+        )
+        try fm.setAttributes(
+            [.posixPermissions: 0o000],
+            ofItemAtPath: unreachableDirectoryURL.path()
+        )
     }
 
     func cleanUp(
         _ directory: URL,
         withFileManager fm: FileManager
     ) throws {
+        let unreachableDirectoryURL = directory.appending(path: "unreachable_directory")
+        if fm.fileExists(atPath: unreachableDirectoryURL.path()) {
+            try fm.setAttributes(
+                [.posixPermissions: 0o644],
+                ofItemAtPath: unreachableDirectoryURL.path()
+            )
+        }
         try fm.removeItem(at: directory)
         try #require(!fm.fileExists(atPath: directory.path()))
     }
