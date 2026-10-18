@@ -65,8 +65,11 @@ private extension UsingTemporaryDirectory {
             )
             let filesToCreate = 5
             try (1...filesToCreate).forEach {
-                let fileURL = testDirectoryURL.appending(path: "\($0).txt")
-                try "\($0)".write(to: fileURL, atomically: true, encoding: .utf8)
+                try "\($0)".write(
+                    to: testDirectoryURL.appending(path: "\($0).txt"),
+                    atomically: true,
+                    encoding: .utf8
+                )
             }
             let fileURLs = try fm.contentsOfDirectory(
                 at: testDirectoryURL,
@@ -79,12 +82,12 @@ private extension UsingTemporaryDirectory {
             includingPropertiesForKeys: [.isDirectoryKey]
         )
         try #require(directoryURLs.filter(\.hasDirectoryPath).count == directoriesToCreate)
-        let testEmptyDirectoryURL = directory.appending(
-            components: "dir_empty",
-            directoryHint: .isDirectory
-        )
+
         try fm.createDirectory(
-            at: testEmptyDirectoryURL,
+            at: directory.appending(
+                components: "dir_empty",
+                directoryHint: .isDirectory
+            ),
             withIntermediateDirectories: true
         )
 
@@ -100,53 +103,57 @@ private extension UsingTemporaryDirectory {
         try Data([0xE3, 0x81, 0x82, 0xE3, 0x81, 0x84, 0xE3, 0x81, 0x86, 0xE3, 0x81, 0x88, 0x82, 0xa8])
             .write(to: invalidEncodingFileURL)
 
-        let unreachableFileURL = directory.appending(path: "unreachable_file.txt")
-        try "unreachable".write(
-            to: unreachableFileURL,
-            atomically: true,
-            encoding: .utf8
-        )
-        try fm.setAttributes(
-            [.posixPermissions: 000],
-            ofItemAtPath: unreachableFileURL.path()
-        )
+        try directory.appending(path: "unreachable_file.txt").apply {
+            try "unreachable".write(
+                to: $0,
+                atomically: true,
+                encoding: .utf8
+            )
+            try fm.setAttributes(
+                [.posixPermissions: 000],
+                ofItemAtPath: $0.path()
+            )
+        }
 
-        let unreachableDirectoryURL = directory.appending(path: "unreachable_directory")
-        try fm.createDirectory(
-            at: unreachableDirectoryURL,
-            withIntermediateDirectories: true
-        )
-        try "This file is unreachable".write(
-            to: unreachableDirectoryURL.appending(path: "test.txt"),
-            atomically: true,
-            encoding: .utf8
-        )
-        try fm.setAttributes(
-            [.posixPermissions: 0o000],
-            ofItemAtPath: unreachableDirectoryURL.path()
-        )
+        try directory.appending(path: "unreachable_directory").apply {
+            try fm.createDirectory(
+                at: $0,
+                withIntermediateDirectories: true
+            )
+            try "This file is unreachable".write(
+                to: $0.appending(path: "test.txt"),
+                atomically: true,
+                encoding: .utf8
+            )
+            try fm.setAttributes(
+                [.posixPermissions: 0o000],
+                ofItemAtPath: $0.path()
+            )
+        }
 
-        let readonlyDirectoryURL = directory.appending(path: "readonly_directory")
-        try fm.createDirectory(
-            at: readonlyDirectoryURL,
-            withIntermediateDirectories: true
-        )
-        try fm.setAttributes(
-            [.posixPermissions: 0o555],
-            ofItemAtPath: readonlyDirectoryURL.path()
-        )
+        try directory.appending(path: "readonly_directory").apply {
+            try fm.createDirectory(
+                at: $0,
+                withIntermediateDirectories: true
+            )
+            try fm.setAttributes(
+                [.posixPermissions: 0o555],
+                ofItemAtPath: $0.path()
+            )
+        }
     }
 
     func cleanUp(
         _ directory: URL,
         withFileManager fm: FileManager
     ) throws {
-        let unreachableDirectoryURL = directory.appending(path: "unreachable_directory")
-        if fm.fileExists(atPath: unreachableDirectoryURL.path()) {
-            try fm.setAttributes(
-                [.posixPermissions: 0o755],
-                ofItemAtPath: unreachableDirectoryURL.path()
-            )
+        try directory.appending(path: "unreachable_directory").apply {
+            if fm.fileExists(atPath: $0.path()) {
+                try fm.setAttributes(
+                    [.posixPermissions: 0o755],
+                    ofItemAtPath: $0.path()
+                )
+            }
         }
         try fm.removeItem(at: directory)
         try #require(!fm.fileExists(atPath: directory.path()))
@@ -157,5 +164,14 @@ private extension UsingTemporaryDirectory {
 extension Trait where Self == UsingTemporaryDirectory {
     static var usingTemporaryDirectory: Self {
         Self()
+    }
+}
+
+// MARK: -
+private extension URL {
+    @discardableResult
+    func apply(_ closure: (URL) throws -> Void) rethrows -> URL {
+        try closure(self)
+        return self
     }
 }
