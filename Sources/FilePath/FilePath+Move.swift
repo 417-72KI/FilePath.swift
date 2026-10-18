@@ -2,7 +2,7 @@ import Foundation
 
 public extension FilePath {
     @discardableResult
-    nonisolated func move(to destination: FilePath) throws(MoveError) -> FilePath {
+    func move(to destination: FilePath) throws(MoveError) -> FilePath {
         do {
             try fm.moveItem(at: url, to: destination.url)
             return destination
@@ -20,7 +20,7 @@ public extension FilePath {
     }
 
     @discardableResult
-    nonisolated func move(toDirectory directory: FilePath) throws(MoveError) -> FilePath {
+    func move(toDirectory directory: FilePath) throws(MoveError) -> FilePath {
         switch directory.existingStatus {
         case .notExist:
             throw MoveError.destinationNotExist(directory)

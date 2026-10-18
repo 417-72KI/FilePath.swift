@@ -10,7 +10,7 @@ public enum MoveError: FilePathError {
 }
 
 extension MoveError: Equatable {
-    nonisolated public static func == (lhs: MoveError, rhs: MoveError) -> Bool {
+    public static func == (lhs: MoveError, rhs: MoveError) -> Bool {
         switch (lhs, rhs) {
         case let (.sourceNotExist(lhsPath), .sourceNotExist(rhsPath)): lhsPath == rhsPath
         case let (.sourceIsNotDirectory(lhsPath), .sourceIsNotDirectory(rhsPath)): lhsPath == rhsPath
