@@ -2,7 +2,6 @@ public import Foundation
 
 public extension FilePath {
     func write(_ data: Data, force: Bool = false) throws(WriteError) {
-        guard parent.exists else { throw .directoryNotExist(parent) }
         guard !isDirectory else { throw .isDirectory(self) }
         do {
             var options: Data.WritingOptions = [.atomic]
@@ -29,7 +28,7 @@ public extension FilePath {
 
 // MARK:
 public enum WriteError: FilePathError {
-    case directoryNotExist(FilePath)
+    case notExist(FilePath)
     case isDirectory(FilePath)
     case alreadyExists(FilePath)
     case permissionDenied(FilePath)
@@ -40,7 +39,7 @@ public enum WriteError: FilePathError {
 extension WriteError: Equatable {
     public static func == (lhs: WriteError, rhs: WriteError) -> Bool {
         switch (lhs, rhs) {
-        case let (.directoryNotExist(lhsPath), .directoryNotExist(rhsPath)): lhsPath == rhsPath
+        case let (.notExist(lhsPath), .notExist(rhsPath)): lhsPath == rhsPath
         case let (.isDirectory(lhsPath), .isDirectory(rhsPath)): lhsPath == rhsPath
         case let (.alreadyExists(lhsPath), .alreadyExists(rhsPath)): lhsPath == rhsPath
         case let (.permissionDenied(lhsPath), .permissionDenied(rhsPath)): lhsPath == rhsPath
@@ -59,6 +58,8 @@ private extension Error {
         let nsError = self as NSError
         if nsError.domain == NSCocoaErrorDomain {
             switch nsError.code {
+            case NSFileNoSuchFileError:
+                return .notExist(filePath)
             case NSFileWriteFileExistsError:
                 return .alreadyExists(filePath)
             case NSFileWriteNoPermissionError:

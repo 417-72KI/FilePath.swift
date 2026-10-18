@@ -56,13 +56,13 @@ extension FilePathTests {
         }
 
         @Test
-        func directoryNotExist() async throws {
-            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "dir_not_exist", directoryHint: .isDirectory))
-            try #require(!path.exists)
+        func notExist() async throws {
+            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "dir_not_exist/test.txt"))
+            try #require(!path.parent.exists)
             let error = try #require(throws: WriteError.self) {
-                try (path + "test.txt").write(Data("Hello, World!".utf8))
+                try path.write(Data("Hello, World!".utf8))
             }
-            #expect(error == .directoryNotExist(path))
+            #expect(error == .notExist(path))
         }
 
         @Test
@@ -133,13 +133,13 @@ extension FilePathTests {
         }
 
         @Test
-        func directoryNotExist() async throws {
-            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "dir_not_exist", directoryHint: .isDirectory))
-            try #require(!path.exists)
+        func notExist() async throws {
+            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "dir_not_exist/test.txt"))
+            try #require(!path.parent.exists)
             let error = try #require(throws: WriteError.self) {
-                try (path + "test.txt").writeString("Hello, World!")
+                try path.writeString("Hello, World!")
             }
-            #expect(error == .directoryNotExist(path))
+            #expect(error == .notExist(path))
         }
 
         @Test
