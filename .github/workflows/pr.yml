@@ -81,11 +81,10 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           path: test_output
-      - name: Merge
+      - name: Validate test result count
         env:
           MACOS_VERSIONS_JSON: ${{ needs.extract-matrix.outputs.macos-versions }}
         run: |
-          set -o pipefail
           expected_count="$(jq 'length' <<< "$MACOS_VERSIONS_JSON")"
           shopt -s nullglob
           result_bundles=(test_output/**/TestResult.xcresult)
@@ -94,6 +93,10 @@ jobs:
             echo "Expected $expected_count TestResult.xcresult bundles, found $actual_count" >&2
             exit 1
           fi
+      - name: Merge
+        run: |
+          shopt -s nullglob
+          result_bundles=(test_output/**/TestResult.xcresult)
           xcrun xcresulttool merge --output-path 'TestResult.xcresult' "${result_bundles[@]}"
           xcrun xcresulttool get test-results tests --path 'TestResult.xcresult' > 'result.json'
       - name: Upload test result
