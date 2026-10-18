@@ -19,7 +19,7 @@ extension FileStateError: Equatable {
 
 // MARK: -
 extension Error {
-    nonisolated func asFileStateError(filePath: FilePath) -> FileStateError {
+    func asFileStateError(filePath: FilePath) -> FileStateError {
         if let fileStateError = self as? FileStateError {
             return fileStateError
         }
