@@ -7,7 +7,7 @@ public enum FileStateError: FilePathError {
 }
 
 extension FileStateError: Equatable {
-    nonisolated public static func == (lhs: FileStateError, rhs: FileStateError) -> Bool {
+    public static func == (lhs: FileStateError, rhs: FileStateError) -> Bool {
         switch (lhs, rhs) {
         case let (.notExist(lhsPath), .notExist(rhsPath)): lhsPath == rhsPath
         case let (.notDirectory(lhsPath), .notDirectory(rhsPath)): lhsPath == rhsPath

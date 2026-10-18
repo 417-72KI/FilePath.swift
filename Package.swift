@@ -42,7 +42,7 @@ package.targets
             .inferIsolatedConformances,
             .nonisolatedNonsendingByDefault,
             .immutableWeakCaptures,
-            .defaultIsolation($0.isTest ? nil : MainActor.self)
+            .defaultIsolation(nil)
         ]
     }
 

@@ -1,11 +1,11 @@
 import Foundation
 
 public struct FilePath: Sendable {
-    nonisolated var url: URL
+    var url: URL
 }
 
 public extension FilePath {
-    nonisolated init(_ path: String) {
+    init(_ path: String) {
         self.url = URL(
             filePath: path,
             directoryHint: .checkFileSystem,
@@ -15,31 +15,31 @@ public extension FilePath {
 }
 
 public extension FilePath {
-    nonisolated var path: String { url.path(percentEncoded: false) }
+    var path: String { url.path(percentEncoded: false) }
 
-    nonisolated var absolutePath: String { url.absoluteURL.path(percentEncoded: false) }
+    var absolutePath: String { url.absoluteURL.path(percentEncoded: false) }
 }
 
 public extension FilePath {
-    nonisolated var parent: FilePath {
+    var parent: FilePath {
         FilePath(url: url.deletingLastPathComponent())
     }
 }
 
 // MARK: -
 public extension FilePath {
-    nonisolated static func + (lhs: FilePath, rhs: String) -> FilePath {
+    static func + (lhs: FilePath, rhs: String) -> FilePath {
         FilePath(url: lhs.url.appending(path: rhs))
     }
 }
 
 // MARK: -
 public extension FilePath {
-    nonisolated static var current: Self {
+    static var current: Self {
         Self(url: .currentDirectory())
     }
 
-    nonisolated static var home: Self {
+    static var home: Self {
         Self(url: .homeDirectory)
     }
 }

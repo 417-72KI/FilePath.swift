@@ -1,7 +1,7 @@
 import Foundation
 
 public extension FilePath {
-    nonisolated var children: [FilePath] {
+    var children: [FilePath] {
         get throws {
             #if os(Linux)
             // On Linux, `contentsOfDirectory(at:includingPropertiesForKeys:)` won't throw an error if the path is a file, but will return an empty array. So we need to check if it's a file first.
@@ -16,7 +16,7 @@ public extension FilePath {
         }
     }
 
-    nonisolated var descendants: [FilePath] {
+    var descendants: [FilePath] {
         get throws {
             switch existingStatus {
             case .notExist: throw FileStateError.notExist(self)

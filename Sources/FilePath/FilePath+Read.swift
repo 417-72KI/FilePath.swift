@@ -1,7 +1,7 @@
 public import Foundation
 
 public extension FilePath {
-    nonisolated func read() throws(ReadError) -> Data {
+    func read() throws(ReadError) -> Data {
         do {
             return try Data(contentsOf: url)
         } catch {
@@ -9,7 +9,7 @@ public extension FilePath {
         }
     }
 
-    nonisolated func readString(encoding: String.Encoding = .utf8) throws(ReadError) -> String {
+    func readString(encoding: String.Encoding = .utf8) throws(ReadError) -> String {
         let data = try read()
         guard let string = String(data: data, encoding: encoding) else {
             throw ReadError.invalidEncoding(self)
@@ -28,7 +28,7 @@ public enum ReadError: FilePathError {
 }
 
 extension ReadError: Equatable {
-    nonisolated public static func == (lhs: ReadError, rhs: ReadError) -> Bool {
+    public static func == (lhs: ReadError, rhs: ReadError) -> Bool {
         switch (lhs, rhs) {
         case let (.notExist(lhsPath), .notExist(rhsPath)): lhsPath == rhsPath
         case let (.notReadable(lhsPath), .notReadable(rhsPath)): lhsPath == rhsPath
@@ -42,7 +42,7 @@ extension ReadError: Equatable {
 
 // MARK: -
 private extension Error {
-    nonisolated func asReadError(_ filePath: FilePath) -> ReadError {
+    func asReadError(_ filePath: FilePath) -> ReadError {
         if let readError = self as? ReadError {
             return readError
         }

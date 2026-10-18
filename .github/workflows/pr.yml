@@ -74,16 +74,30 @@ jobs:
           retention-days: 1
   merge-xcresult:
     name: Merge xcresult
-    needs: test-macos
+    needs: [extract-matrix, test-macos]
     if: always() && !cancelled()
     runs-on: macos-latest
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           path: test_output
+      - name: Validate test result count
+        env:
+          MACOS_VERSIONS_JSON: ${{ needs.extract-matrix.outputs.macos-versions }}
+        run: |
+          expected_count="$(jq 'length' <<< "$MACOS_VERSIONS_JSON")"
+          shopt -s nullglob
+          result_bundles=(test_output/**/TestResult.xcresult)
+          actual_count="${#result_bundles[@]}"
+          if [ "$actual_count" -ne "$expected_count" ]; then
+            echo "Expected $expected_count TestResult.xcresult bundles, found $actual_count" >&2
+            exit 1
+          fi
       - name: Merge
         run: |
-          xcrun xcresulttool merge --output-path 'TestResult.xcresult' test_output/**/TestResult.xcresult
+          shopt -s nullglob
+          result_bundles=(test_output/**/TestResult.xcresult)
+          xcrun xcresulttool merge --output-path 'TestResult.xcresult' "${result_bundles[@]}"
           xcrun xcresulttool get test-results tests --path 'TestResult.xcresult' > 'result.json'
       - name: Upload test result
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
