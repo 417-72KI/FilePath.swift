@@ -67,7 +67,7 @@ extension FilePathTests {
 
         @Test
         func permissionDenied() async throws {
-            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "unreachable_directory/test.txt"))
+            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "readonly_directory/test.txt"))
             try #require(path.parent.isDirectory)
             try withKnownIssue("Running with root privileges, files without read permission still can be read.") {
                 let error = try #require(throws: WriteError.self) {
@@ -144,7 +144,7 @@ extension FilePathTests {
 
         @Test
         func permissionDenied() async throws {
-            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "unreachable_directory/test.txt"))
+            let path = FilePath(url: UsingTemporaryDirectory.current.appending(path: "readonly_directory/test.txt"))
             try #require(path.parent.isDirectory)
             try withKnownIssue("Running with root privileges, files without read permission still can be read.") {
                 let error = try #require(throws: WriteError.self) {

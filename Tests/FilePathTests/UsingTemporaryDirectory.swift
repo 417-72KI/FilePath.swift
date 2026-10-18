@@ -125,6 +125,16 @@ private extension UsingTemporaryDirectory {
             [.posixPermissions: 0o000],
             ofItemAtPath: unreachableDirectoryURL.path()
         )
+
+        let readonlyDirectoryURL = directory.appending(path: "readonly_directory")
+        try fm.createDirectory(
+            at: readonlyDirectoryURL,
+            withIntermediateDirectories: true
+        )
+        try fm.setAttributes(
+            [.posixPermissions: 0o555],
+            ofItemAtPath: readonlyDirectoryURL.path()
+        )
     }
 
     func cleanUp(
