@@ -133,6 +133,7 @@ jobs:
   danger:
     name: Danger
     needs: merge-xcresult
+    if: always() && !cancelled()
     runs-on: ubuntu-latest
     permissions:
       checks: write
