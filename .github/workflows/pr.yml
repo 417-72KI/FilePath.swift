@@ -53,6 +53,15 @@ jobs:
         run: |
           defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
           defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
+      - name: Preboot simulator # Ref: https://github.com/actions/runner-images/issues/12777
+        if: ${{ startsWith(matrix.xcode, '27') && !startsWith(matrix.destination, 'platform=macOS') }}
+        env:
+          DESTINATION: ${{ matrix.destination }}
+        run: |
+          simulator_name="$(sed -E 's/.*name=([^,]+).*/\1/' <<< "${DESTINATION}")"
+          echo "Booting simulator ${simulator_name}"
+          xcrun simctl boot "${simulator_name}" || true
+          xcrun simctl bootstatus "${simulator_name}"
       - name: test
         run: |
           defaults write com.apple.dt.XCBuild EnableSwiftBuildSystemIntegration 1
