@@ -74,7 +74,7 @@ jobs:
             -resultBundlePath 'test_output/TestResult.xcresult' \
             clean test | xcbeautify
       - name: Upload test result
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: success() || failure()
         with:
           name: ${{ steps.create-destination-key.outputs.destination-key }}
@@ -109,7 +109,7 @@ jobs:
           xcrun xcresulttool merge --output-path 'TestResult.xcresult' "${result_bundles[@]}"
           xcrun xcresulttool get test-results tests --path 'TestResult.xcresult' > 'result.json'
       - name: Upload test result
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: merged-test-result
           path: |
