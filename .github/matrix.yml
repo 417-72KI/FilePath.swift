@@ -6,7 +6,7 @@ macos_runners:
           - platform=macOS
           - platform=iOS Simulator,name=iPhone 18 Pro
           - platform=tvOS Simulator,name=Apple TV 4K (3rd generation)
-          - platform=watchOS Simulator,name=Apple Watch Series 12 (46mm)
+          # - platform=watchOS Simulator,name=Apple Watch Series 12 (46mm) # temporarily unavailable due to hang-up on boot
   macos-26: # ref: https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md
     xcode:
       "26.6": # Swift 6.3
